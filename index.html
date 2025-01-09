@@ -33,6 +33,7 @@
    <a-image id="img3" src="#image3" width="16" height="9" position="4 0 0" rotation="-90 0 0"
 			scale="0.1 0.2 1" visible="false"></a-image>
    
+   
 		</a-marker>
 	
 		<a-entity camera></a-entity>
@@ -45,16 +46,16 @@
         document.querySelector("#img3")
     ];
 
-    let delay = 1000; // Giảm thời gian chờ
+    let delay = 4000; // Thời gian chờ là 4 giây
 
     images.forEach((image, index) => {
         setTimeout(() => {
-            image.setAttribute("visible", true); 
-            image.setAttribute("scale", "1 1 1"); // Scale về trạng thái ban đầu (1 1 1)
+            image.setAttribute("visible", true); // Hiển thị hình ảnh
+            image.setAttribute("scale", "0.1 0.2 1"); // Đặt lại scale
 
             // Debug thông tin hình ảnh
             console.log(`Image ${index + 1} (${image.getAttribute("src")}) is now visible.`);
-        }, index * delay); 
+        }, index * delay); // Sử dụng khoảng thời gian cách nhau 4 giây
     });
 };
 	</script>
