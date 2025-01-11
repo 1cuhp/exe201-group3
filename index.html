@@ -26,40 +26,12 @@
 
 		<a-marker preset="custom" type="pattern" url="./marker/bt2.patt" id="marker">
 			<a-image id="img1" src="#image1" width="16" height="9" position="0 0 0" rotation="-90 0 0" scale="0.1 0.2 1" visible="false"></a-image>
-			<a-image id="img2" src="#image2" width="16" height="9" position="2 0 0" rotation="-90 0 0" scale="0.1 0.2 1" visible="false"></a-image>
-			<a-image id="img3" src="#image3" width="16" height="9" position="4 0 0" rotation="-90 0 0" scale="0.1 0.2 1" visible="false"></a-image>
+		
 		</a-marker>
 		<a-entity camera></a-entity>
 	</a-scene>	
-	<script>
-        window.onload = function () {
-            const images = [
-                document.querySelector("#img1"),
-                document.querySelector("#img2"),
-                document.querySelector("#img3")
-            ];
-    
-            let delay = 3000; // Thời gian chờ giữa các hình ảnh (3 giây)
-            let currentIndex = 0; // Bắt đầu từ hình ảnh đầu tiên
-    
-            const showImage = () => {
-                // Ẩn tất cả các hình ảnh
-                images.forEach((image, index) => {
-                    image.setAttribute("visible", index === currentIndex); // Chỉ hiển thị hình ảnh tại currentIndex
-                });
-    
-                // In ra thông tin hình ảnh hiển thị
-                console.log(`Image ${currentIndex + 1} (${images[currentIndex].getAttribute("src")}) is now visible.`);
-    
-                // Chuyển sang hình ảnh tiếp theo
-                currentIndex = (currentIndex + 1) % images.length; // Quay lại hình ảnh đầu tiên sau khi hiển thị hết
-            };
-    
-            // Lặp lại việc hiển thị hình ảnh sau mỗi 3 giây
-            setInterval(showImage, delay);
-        };
-    </script>
-    
+	
+
 </body>
 </html>
 
