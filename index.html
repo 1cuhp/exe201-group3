@@ -25,38 +25,45 @@
         </a-assets>
 
         <a-marker preset="custom" type="pattern" url="./marker/bt2.patt" id="marker">
+            <!-- Image 1 and Text -->
             <a-image id="img1" src="#image1" width="16" height="9" position="0 0 0" rotation="-90 0 0" scale="0.1 0.2 1" visible="false"></a-image>
+            <a-text id="text1" value="Chợ Bến Thành" color="#FFFFFF" width="5" position="0 -0.5 0" rotation="-90 0 0" visible="false"></a-text>
+            
+            <!-- Image 2 and Text -->
             <a-image id="img2" src="#image2" width="16" height="9" position="2 0 0" rotation="-90 0 0" scale="0.1 0.2 1" visible="false"></a-image>
+            <a-text id="text2" value="Cảnh chợ lúc hoàng hôn" color="#FFFFFF" width="5" position="2 -0.5 0" rotation="-90 0 0" visible="false"></a-text>
+            
+            <!-- Image 3 and Text -->
             <a-image id="img3" src="#image3" width="16" height="9" position="4 0 0" rotation="-90 0 0" scale="0.1 0.2 1" visible="false"></a-image>
+            <a-text id="text3" value="Chợ Bến Thành về đêm" color="#FFFFFF" width="5" position="4 -0.5 0" rotation="-90 0 0" visible="false"></a-text>
         </a-marker>
         <a-entity camera></a-entity>
-    </a-scene>  
+    </a-scene>
 
     <script>
         window.onload = function () {
             const images = [
-                document.querySelector("#img1"),
-                document.querySelector("#img2"),
-                document.querySelector("#img3")
+                { image: document.querySelector("#img1"), text: document.querySelector("#text1") },
+                { image: document.querySelector("#img2"), text: document.querySelector("#text2") },
+                { image: document.querySelector("#img3"), text: document.querySelector("#text3") }
             ];
 
             let delay = 3000; // Thời gian chờ là 3 giây
             let currentIndex = 0;
 
-            const showImage = () => {
-                images.forEach((image, index) => {
-                    image.setAttribute("visible", index === currentIndex); // Chỉ hiển thị hình ảnh hiện tại
-                    image.setAttribute("scale", "0.1 0.2 1");
+            const showImageAndText = () => {
+                images.forEach((obj, index) => {
+                    const isVisible = index === currentIndex;
+                    obj.image.setAttribute("visible", isVisible); // Hiển thị ảnh
+                    obj.image.setAttribute("scale", "0.1 0.2 1");
+                    obj.text.setAttribute("visible", isVisible); // Hiển thị chữ
                 });
-
-                // Debug thông tin hình ảnh
-                console.log(`Image ${currentIndex + 1} (${images[currentIndex].getAttribute("src")}) is now visible.`);
 
                 // Tăng chỉ số hình ảnh
                 currentIndex = (currentIndex + 1) % images.length; // Quay lại từ đầu nếu đạt tới hình ảnh cuối
             };
 
-            setInterval(showImage, delay); // Lặp lại việc hiển thị hình ảnh sau khoảng thời gian 3 giây
+            setInterval(showImageAndText, delay); // Lặp lại việc hiển thị hình ảnh và chữ sau 3 giây
         };
     </script>
 </body>
