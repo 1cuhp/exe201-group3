@@ -22,11 +22,15 @@
             ];
             var imageElement = document.getElementById('img1');
 
-            setInterval(function() {
-                currentImageIndex = (currentImageIndex + 1) % images.length; // Đảm bảo chỉ số không vượt quá số lượng ảnh
-                imageElement.setAttribute('src', images[currentImageIndex]);
-                console.log('Current Image: ' + images[currentImageIndex]); // Log ảnh hiện tại
-            }, 3000); // Thay đổi mỗi 3 giây
+            // Khi marker được phát hiện, bắt đầu thay đổi ảnh
+            var marker = document.getElementById('marker');
+            marker.addEventListener('markerFound', function() {
+                setInterval(function() {
+                    currentImageIndex = (currentImageIndex + 1) % images.length; // Đảm bảo chỉ số không vượt quá số lượng ảnh
+                    imageElement.setAttribute('src', images[currentImageIndex]);
+                    console.log('Current Image: ' + images[currentImageIndex]); // Log ảnh hiện tại
+                }, 3000); // Thay đổi mỗi 3 giây
+            });
         };
     </script>
 </head>
