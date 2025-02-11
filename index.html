@@ -6,7 +6,7 @@
           content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <!-- A-Frame -->
     <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
-    <!-- AR.js (có thể thay đổi sang phiên bản mới hơn nếu cần) -->
+    <!-- AR.js -->
     <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
     
     <script>
@@ -16,7 +16,6 @@
         HTMLCanvasElement.prototype.getContext = function(type, options) {
           if (type === "2d") {
             options = options || {};
-            // Bắt buộc bật willReadFrequently
             options.willReadFrequently = true;
           }
           return originalGetContext.call(this, type, options);
@@ -40,12 +39,16 @@
         var currentImageIndex = 0;
         // Sử dụng asset reference để đảm bảo các hình ảnh đã preload
         var images = ["#image1", "#image2", "#image3"];
+        
+        // Biến cờ để đảm bảo audio chỉ khởi chạy 1 lần khi marker được phát hiện
+        var audioStarted = false;
 
         // Đợi scene của A-Frame được load xong
         var sceneEl = document.querySelector("a-scene");
         sceneEl.addEventListener("loaded", function () {
           var imageElement = document.getElementById("img1");
           var marker = document.getElementById("marker");
+          var audioEntity = document.getElementById("audio-entity");
           var intervalSet = false; // Đảm bảo chỉ khởi tạo interval 1 lần
 
           // (Tuỳ chọn) Khi texture được load, điều chỉnh các thuộc tính để tránh resize không cần thiết
@@ -55,8 +58,14 @@
             texture.minFilter = THREE.LinearFilter;
           });
 
-          // Khi marker được phát hiện, bắt đầu chuyển ảnh
+          // Khi marker được phát hiện
           marker.addEventListener("markerFound", function () {
+            // Nếu audio chưa được khởi chạy, phát audio và đánh dấu đã phát
+            if (!audioStarted) {
+              audioEntity.components.sound.playSound();
+              audioStarted = true;
+            }
+            // Bắt đầu chuyển hình ảnh (chỉ chạy 1 lần)
             if (!intervalSet) {
               intervalSet = true;
               setInterval(function () {
@@ -66,6 +75,12 @@
               }, 3000);
             }
           });
+
+          // Khi marker mất, dừng audio và reset cờ
+          marker.addEventListener("markerLost", function () {
+            audioEntity.components.sound.stopSound();
+            audioStarted = false;
+          });
         });
       });
     </script>
@@ -74,10 +89,12 @@
   <body style="margin: 0; overflow: hidden;">
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
       <a-assets>
-        <!-- Lưu ý: Để tránh cảnh báo resize texture, hãy sử dụng hình ảnh có kích thước lũy thừa của 2 -->
+        <!-- Assets hình ảnh -->
         <img id="image1" src="./media/image/cho-ben-thanh.jpg" />
         <img id="image2" src="./media/image/cho-ben-thanh2.jpg" />
         <img id="image3" src="./media/image/cho-ben-thanh3.jpg" />
+        <!-- Asset audio -->
+        <audio id="audio1" src=""></audio>
       </a-assets>
 
       <a-marker preset="custom" type="pattern" url="./marker/btn2-50.patt" id="marker">
@@ -102,6 +119,8 @@
           rotation="-90 0 0"
           visible="true">
         </a-text>
+        <!-- Entity chứa audio; loop: true để đảm bảo audio phát liên tục -->
+        <a-entity id="audio-entity" sound="src: #audio1; autoplay: false; loop: true"></a-entity>
       </a-marker>
 
       <a-entity camera></a-entity>
