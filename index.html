@@ -2,23 +2,43 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
-    />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <!-- A-Frame -->
     <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+    <!-- AR.js (có thể thay đổi sang phiên bản mới hơn nếu cần) -->
     <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+    
     <script>
+      // --- Patch cho canvas: đảm bảo context 2d luôn có willReadFrequently ---
+      (function() {
+        var originalGetContext = HTMLCanvasElement.prototype.getContext;
+        HTMLCanvasElement.prototype.getContext = function(type, options) {
+          if (type === "2d") {
+            options = options || {};
+            // Bắt buộc bật willReadFrequently
+            options.willReadFrequently = true;
+          }
+          return originalGetContext.call(this, type, options);
+        };
+      })();
+
       window.addEventListener("load", function () {
-        // Dispatch resize event sau 3 giây (nếu cần)
+        // --- Patch cho THREE.Material để tránh cảnh báo markersAreaEnabled ---
+        if (THREE && THREE.Material && !('markersAreaEnabled' in THREE.Material.prototype)) {
+          THREE.Material.prototype.markersAreaEnabled = false;
+        }
+
+        // (Tuỳ chọn) Dispatch resize event sau 3 giây nếu cần
         setTimeout(function () {
           var resizeEvent = document.createEvent("UIEvents");
           resizeEvent.initUIEvent("resize", true, false, window, 0);
           window.dispatchEvent(resizeEvent);
         }, 3000);
 
-        // Chuyển đổi ảnh mỗi 3 giây sử dụng asset reference
+        // --- Cấu hình chuyển đổi hình ảnh ---
         var currentImageIndex = 0;
+        // Sử dụng asset reference để đảm bảo các hình ảnh đã preload
         var images = ["#image1", "#image2", "#image3"];
 
         // Đợi scene của A-Frame được load xong
@@ -26,18 +46,24 @@
         sceneEl.addEventListener("loaded", function () {
           var imageElement = document.getElementById("img1");
           var marker = document.getElementById("marker");
-          var intervalSet = false; // Biến cờ để đảm bảo chỉ khởi tạo interval 1 lần
+          var intervalSet = false; // Đảm bảo chỉ khởi tạo interval 1 lần
 
+          // (Tuỳ chọn) Khi texture được load, điều chỉnh các thuộc tính để tránh resize không cần thiết
+          imageElement.addEventListener("materialtextureloaded", function (e) {
+            var texture = e.detail.texture;
+            texture.generateMipmaps = false;
+            texture.minFilter = THREE.LinearFilter;
+          });
+
+          // Khi marker được phát hiện, bắt đầu chuyển ảnh
           marker.addEventListener("markerFound", function () {
             if (!intervalSet) {
               intervalSet = true;
               setInterval(function () {
-                // Cập nhật chỉ số ảnh
                 currentImageIndex = (currentImageIndex + 1) % images.length;
-                // Cập nhật thuộc tính material để đổi ảnh
                 imageElement.setAttribute("material", "src: " + images[currentImageIndex]);
                 console.log("Current Image: " + images[currentImageIndex]);
-              }, 3000); // Thay đổi ảnh mỗi 3 giây
+              }, 3000);
             }
           });
         });
@@ -48,13 +74,14 @@
   <body style="margin: 0; overflow: hidden;">
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
       <a-assets>
+        <!-- Lưu ý: Để tránh cảnh báo resize texture, hãy sử dụng hình ảnh có kích thước lũy thừa của 2 -->
         <img id="image1" src="./media/image/cho-ben-thanh.jpg" />
         <img id="image2" src="./media/image/cho-ben-thanh2.jpg" />
         <img id="image3" src="./media/image/cho-ben-thanh3.jpg" />
       </a-assets>
 
       <a-marker preset="custom" type="pattern" url="./marker/btn2-50.patt" id="marker">
-        <!-- Hiển thị ảnh và Text -->
+        <!-- Hiển thị hình ảnh và text -->
         <a-image
           id="img1"
           src="#image1"
@@ -63,8 +90,8 @@
           position="0 0 0"
           rotation="-90 0 0"
           scale="0.1 0.2 1"
-          visible="true"
-        ></a-image>
+          visible="true">
+        </a-image>
         <a-text
           id="text1"
           value="Cho ben thanh"
@@ -73,8 +100,8 @@
           align="center"
           position="0 1.3 0"
           rotation="-90 0 0"
-          visible="true"
-        ></a-text>
+          visible="true">
+        </a-text>
       </a-marker>
 
       <a-entity camera></a-entity>
