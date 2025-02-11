@@ -23,21 +23,21 @@
           window.dispatchEvent(new UIEvent("resize", { bubbles: true, cancelable: false }));
         }, 3000);
 
-        // Biến lưu trạng thái
-        let audioElement = new Audio("./media/Audio/bird.mp3");
-        audioElement.preload = "auto"; // Tải sẵn file âm thanh
-        audioElement.loop = true; // Lặp lại audio khi phát
+        // Biến lưu trạng thái âm thanh và hình ảnh
+        let audioElement = new Audio("./media/Audio/bird.mp3"); // Đảm bảo audio không bị reset mỗi lần marker xuất hiện
+        let imageIndex = 0; // Chỉ số ảnh hiện tại
+        const images = ["#image1", "#image2", "#image3"]; // Danh sách ảnh
+        let intervalSet = false; // Đảm bảo setInterval chỉ chạy một lần
 
-        let currentImageIndex = 0;
-        const images = ["#image1", "#image2", "#image3"]; // Danh sách hình ảnh
-        const imageElement = document.getElementById("img1");
         const marker = document.getElementById("marker");
-        let intervalSet = false; // Tránh chạy nhiều lần interval
+        const imageElement = document.getElementById("img1");
 
-        // Hàm phát audio
+        // Hàm phát audio (không bị ảnh hưởng khi ảnh thay đổi)
         function playAudio() {
           audioElement.currentTime = 0;
-          audioElement.play().catch(err => console.warn("Lỗi phát âm thanh:", err));
+          audioElement.play()
+            .then(() => console.log("🔊 Phát âm thanh thành công"))
+            .catch(err => console.warn("❌ Lỗi phát âm thanh:", err));
         }
 
         // Khi marker xuất hiện, phát âm thanh và bắt đầu chuyển ảnh
@@ -45,22 +45,21 @@
           console.log("📍 Marker được phát hiện!");
           playAudio();
 
-          // Nếu chưa có interval chuyển ảnh, bắt đầu xoay vòng ảnh
           if (!intervalSet) {
             intervalSet = true;
             setInterval(() => {
-              currentImageIndex = (currentImageIndex + 1) % images.length;
-              imageElement.setAttribute("material", `src: ${images[currentImageIndex]}`);
-              console.log(`🔄 Đã chuyển sang ảnh: ${images[currentImageIndex]}`);
-            }, 3000); // Đổi ảnh sau mỗi 3 giây
+              imageIndex = (imageIndex + 1) % images.length; // Chuyển ảnh theo thứ tự
+              imageElement.setAttribute("material", `src: ${images[imageIndex]}`);
+              console.log(`🖼 Đã chuyển sang ảnh: ${images[imageIndex]}`);
+            }, 3000);
           }
         });
 
-        // Khi marker mất, chỉ dừng âm thanh, ảnh vẫn tiếp tục chuyển
+        // Khi marker mất, dừng âm thanh nhưng hình ảnh vẫn tiếp tục thay đổi
         marker.addEventListener("markerLost", () => {
           console.log("❌ Marker mất!");
           audioElement.pause();
-          audioElement.currentTime = 0;
+          audioElement.currentTime = 0; // Reset về đầu
         });
       });
     </script>
@@ -69,14 +68,14 @@
   <body style="margin: 0; overflow: hidden;">
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
       <a-assets>
-        <!-- Giữ nguyên hình ảnh -->
+        <!-- Danh sách hình ảnh -->
         <img id="image1" src="./media/image/cho-ben-thanh.jpg" />
         <img id="image2" src="./media/image/cho-ben-thanh2.jpg" />
         <img id="image3" src="./media/image/cho-ben-thanh3.jpg" />
       </a-assets>
 
       <a-marker preset="custom" type="pattern" url="./marker/btn2-50.patt" id="marker">
-        <!-- Hiển thị hình ảnh -->
+        <!-- Hiển thị hình ảnh (ảnh sẽ thay đổi liên tục) -->
         <a-image
           id="img1"
           src="#image1"
