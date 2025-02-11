@@ -26,7 +26,11 @@
         // Biến lưu trạng thái âm thanh và hình ảnh
         let audioElement = new Audio("./media/Audio/bird.mp3"); // Đảm bảo audio không bị reset mỗi lần marker xuất hiện
         let imageIndex = 0; // Chỉ số ảnh hiện tại
-        const images = ["#image1", "#image2", "#image3"]; // Danh sách ảnh
+        const imageSources = [
+          "./media/image/cho-ben-thanh.jpg",
+          "./media/image/cho-ben-thanh2.jpg",
+          "./media/image/cho-ben-thanh3.jpg"
+        ]; // Danh sách đường dẫn hình ảnh
         let intervalSet = false; // Đảm bảo setInterval chỉ chạy một lần
 
         const marker = document.getElementById("marker");
@@ -48,9 +52,9 @@
           if (!intervalSet) {
             intervalSet = true;
             setInterval(() => {
-              imageIndex = (imageIndex + 1) % images.length; // Chuyển ảnh theo thứ tự
-              imageElement.setAttribute("material", `src: ${images[imageIndex]}`);
-              console.log(`🖼 Đã chuyển sang ảnh: ${images[imageIndex]}`);
+              imageIndex = (imageIndex + 1) % imageSources.length; // Chuyển ảnh theo thứ tự
+              imageElement.setAttribute("src", imageSources[imageIndex]); // Cập nhật ảnh mới
+              console.log(`🖼 Đã chuyển sang ảnh: ${imageSources[imageIndex]}`);
             }, 3000);
           }
         });
@@ -67,18 +71,11 @@
 
   <body style="margin: 0; overflow: hidden;">
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
-      <a-assets>
-        <!-- Danh sách hình ảnh -->
-        <img id="image1" src="./media/image/cho-ben-thanh.jpg" />
-        <img id="image2" src="./media/image/cho-ben-thanh2.jpg" />
-        <img id="image3" src="./media/image/cho-ben-thanh3.jpg" />
-      </a-assets>
-
       <a-marker preset="custom" type="pattern" url="./marker/btn2-50.patt" id="marker">
         <!-- Hiển thị hình ảnh (ảnh sẽ thay đổi liên tục) -->
         <a-image
           id="img1"
-          src="#image1"
+          src="./media/image/cho-ben-thanh.jpg"
           width="16"
           height="9"
           position="0 0 0"
