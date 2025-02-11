@@ -88,10 +88,13 @@
           }
         });
 
-        markerChua.addEventListener("markerLost", () => {
-          audioChuaMotCot.pause();
-          audioChuaMotCot.currentTime = 0;
-        });
+        // =================== Chùa Vàng ===================
+        let audioChuaVang = new Audio("./media/Audio/cauvang.mp4");
+        let imageIndexVang = 0;
+        const imageSourcesVang = ["#image7", "#image8", "#image9"];
+        let intervalSetVang = false;
+        const markerVang = document.getElementById("marker-vang");
+        const imageElementVang = document.getElementById("img-vang");
 
         markerVang.addEventListener("markerFound", () => {
           console.log("📍 Marker Chùa Vàng được phát hiện!");
@@ -119,6 +122,11 @@
           audioChuaVang.pause();
           audioChuaVang.currentTime = 0; // Reset âm thanh về đầu
         });
+
+
+
+
+        
         // =================== Chùa Som Rong ===================
         let audioChuaSomRong = new Audio("./media/Audio/chuasomrong.mp4");
         let imageIndexSomRong = 0;
