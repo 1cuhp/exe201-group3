@@ -12,69 +12,43 @@
     <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
 
     <script>
-      // Patch cho canvas: đảm bảo context 2d luôn có willReadFrequently
-      (() => {
-        const originalGetContext = HTMLCanvasElement.prototype.getContext;
-        HTMLCanvasElement.prototype.getContext = function (type, options = {}) {
-          if (type === "2d") {
-            options.willReadFrequently = true;
-          }
-          return originalGetContext.call(this, type, options);
-        };
-      })();
-
       window.addEventListener("load", () => {
-        // Patch cho THREE.Material để tránh cảnh báo markersAreaEnabled
+        // PATCH tránh lỗi markersAreaEnabled trong THREE.js
         if (typeof THREE !== "undefined" && THREE.Material && !("markersAreaEnabled" in THREE.Material.prototype)) {
           THREE.Material.prototype.markersAreaEnabled = false;
         }
 
-        // (Tùy chọn) Dispatch resize event sau 3 giây nếu cần
+        // Dispatch resize event sau 3 giây để ổn định camera AR.js
         setTimeout(() => {
           window.dispatchEvent(new UIEvent("resize", { bubbles: true, cancelable: false }));
         }, 3000);
 
-        // Cấu hình chuyển đổi hình ảnh
-        let currentImageIndex = 0;
-        const images = ["#image1", "#image2", "#image3"];
-        let audioStarted = false;
+        // Biến lưu trạng thái âm thanh
+        let audioElement = null;
+        const marker = document.getElementById("marker");
 
-        // Chờ scene của A-Frame load xong
-        const sceneEl = document.querySelector("a-scene");
-        sceneEl.addEventListener("loaded", () => {
-          const imageElement = document.getElementById("img1");
-          const marker = document.getElementById("marker");
-          const audioEntity = document.getElementById("audio-entity");
-          let intervalSet = false;
+        // Hàm phát audio
+        function playAudio(src) {
+          if (audioElement) {
+            audioElement.pause(); // Dừng âm thanh hiện tại nếu có
+          }
+          audioElement = new Audio(src);
+          audioElement.currentTime = 0;
+          audioElement.play().catch(err => console.warn("Lỗi phát âm thanh:", err));
+        }
 
-          // Khi texture hình ảnh đã load, điều chỉnh một số thuộc tính để tối ưu
-          imageElement.addEventListener("materialtextureloaded", (e) => {
-            const texture = e.detail.texture;
-            texture.generateMipmaps = false;
-            texture.minFilter = THREE.LinearFilter;
-          });
+        // Khi marker xuất hiện, phát âm thanh
+        marker.addEventListener("markerFound", () => {
+          playAudio("./media/Audio/bird.mp3"); // Đường dẫn file âm thanh
+        });
 
-          // Khi marker được phát hiện
-          marker.addEventListener("markerFound", () => {
-            if (!audioStarted) {
-              audioEntity.components.sound.playSound();
-              audioStarted = true;
-            }
-            if (!intervalSet) {
-              intervalSet = true;
-              setInterval(() => {
-                currentImageIndex = (currentImageIndex + 1) % images.length;
-                imageElement.setAttribute("material", `src: ${images[currentImageIndex]}`);
-                console.log(`Current Image: ${images[currentImageIndex]}`);
-              }, 3000);
-            }
-          });
-
-          // Khi marker mất, dừng audio và reset cờ
-          marker.addEventListener("markerLost", () => {
-            audioEntity.components.sound.stopSound();
-            audioStarted = false;
-          });
+        // Khi marker mất, dừng âm thanh
+        marker.addEventListener("markerLost", () => {
+          if (audioElement) {
+            audioElement.pause();
+            audioElement.currentTime = 0; // Reset về đầu
+            audioElement = null;
+          }
         });
       });
     </script>
@@ -83,16 +57,14 @@
   <body style="margin: 0; overflow: hidden;">
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
       <a-assets>
-        <!-- Assets hình ảnh -->
+        <!-- Giữ nguyên hình ảnh -->
         <img id="image1" src="./media/image/cho-ben-thanh.jpg" />
         <img id="image2" src="./media/image/cho-ben-thanh2.jpg" />
         <img id="image3" src="./media/image/cho-ben-thanh3.jpg" />
-        <!-- Asset audio -->
-        <audio id="audio1" src="media/Audio/bird.mp3"></audio>
       </a-assets>
 
       <a-marker preset="custom" type="pattern" url="./marker/btn2-50.patt" id="marker">
-        <!-- Hiển thị hình ảnh và text -->
+        <!-- Hiển thị hình ảnh -->
         <a-image
           id="img1"
           src="#image1"
@@ -103,9 +75,11 @@
           scale="0.1 0.2 1"
           visible="true">
         </a-image>
+        
+        <!-- Hiển thị chữ -->
         <a-text
           id="text1"
-          value="Cho ben thanh"
+          value="Chợ Bến Thành"
           color="#FFFFFF"
           width="3"
           align="center"
@@ -113,8 +87,6 @@
           rotation="-90 0 0"
           visible="true">
         </a-text>
-        <!-- Entity chứa audio; loop: true để đảm bảo audio phát liên tục -->
-        <a-entity id="audio-entity" sound="src: #audio1; autoplay: false; loop: true"></a-entity>
       </a-marker>
 
       <a-entity camera></a-entity>
