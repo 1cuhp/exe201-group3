@@ -13,56 +13,66 @@
 
     <script>
       window.addEventListener("load", () => {
-        // PATCH tránh lỗi markersAreaEnabled trong THREE.js
         if (typeof THREE !== "undefined" && THREE.Material && !("markersAreaEnabled" in THREE.Material.prototype)) {
           THREE.Material.prototype.markersAreaEnabled = false;
         }
 
-        // Dispatch resize event sau 3 giây để ổn định camera AR.js
         setTimeout(() => {
           window.dispatchEvent(new UIEvent("resize", { bubbles: true, cancelable: false }));
         }, 3000);
 
-        // Biến lưu trạng thái âm thanh và hình ảnh
-        let audioElement = new Audio("./media/Audio/chobenthanh.mp4"); // Âm thanh không reset mỗi lần marker xuất hiện
-        let imageIndex = 0; // Chỉ số ảnh hiện tại
-        const imageSources = ["#image1", "#image2", "#image3"]; // Dùng ID từ <a-assets>
-        let intervalSet = false; // Đảm bảo setInterval chỉ chạy một lần
+        // =================== Chợ Bến Thành ===================
+        let audioChoBenThanh = new Audio("./media/Audio/chobenthanh.mp4");
+        let imageIndexCho = 0;
+        const imageSourcesCho = ["#image1", "#image2", "#image3"];
+        let intervalSetCho = false;
+        const markerCho = document.getElementById("marker-cho");
+        const imageElementCho = document.getElementById("img-cho");
 
-        const marker = document.getElementById("marker");
-        const imageElement = document.getElementById("img1");
+        markerCho.addEventListener("markerFound", () => {
+          console.log("📍 Marker Chợ Bến Thành được phát hiện!");
+          audioChoBenThanh.currentTime = 0;
+          audioChoBenThanh.play().catch(err => console.warn("❌ Lỗi phát âm thanh:", err));
 
-        // Hàm phát audio
-        function playAudio() {
-          audioElement.currentTime = 0;
-          audioElement.play()
-            .then(() => console.log("🔊 Phát âm thanh thành công"))
-            .catch(err => console.warn("❌ Lỗi phát âm thanh:", err));
-        }
-
-        // Khi marker xuất hiện, phát âm thanh và bắt đầu chuyển ảnh
-        marker.addEventListener("markerFound", () => {
-          console.log("📍 Marker được phát hiện!");
-          playAudio();
-
-          if (!intervalSet) {
-            intervalSet = true;
+          if (!intervalSetCho) {
+            intervalSetCho = true;
             setInterval(() => {
-              imageIndex = (imageIndex + 1) % imageSources.length; // Chuyển ảnh theo thứ tự
-              console.log(`🖼 Đang chuyển sang ảnh: ${imageSources[imageIndex]}`);
-
-              // Cập nhật hình ảnh bằng cách đổi `material.src`
-              imageElement.setAttribute("material", "src", imageSources[imageIndex]);
-              console.log(`✅ Ảnh đã cập nhật: ${imageSources[imageIndex]}`);
+              imageIndexCho = (imageIndexCho + 1) % imageSourcesCho.length;
+              imageElementCho.setAttribute("material", "src", imageSourcesCho[imageIndexCho]);
             }, 3000);
           }
         });
 
-        // Khi marker mất, dừng âm thanh nhưng hình ảnh vẫn tiếp tục thay đổi
-        marker.addEventListener("markerLost", () => {
-          console.log("❌ Marker mất!");
-          audioElement.pause();
-          audioElement.currentTime = 0; // Reset về đầu
+        markerCho.addEventListener("markerLost", () => {
+          audioChoBenThanh.pause();
+          audioChoBenThanh.currentTime = 0;
+        });
+
+        // =================== Chùa Một Cột ===================
+        let audioChuaMotCot = new Audio("./media/Audio/chuamotcot.mp4");
+        let imageIndexChua = 0;
+        const imageSourcesChua = ["#image4", "#image5", "#image6"];
+        let intervalSetChua = false;
+        const markerChua = document.getElementById("marker-chua");
+        const imageElementChua = document.getElementById("img-chua");
+
+        markerChua.addEventListener("markerFound", () => {
+          console.log("📍 Marker Chùa Một Cột được phát hiện!");
+          audioChuaMotCot.currentTime = 0;
+          audioChuaMotCot.play().catch(err => console.warn("❌ Lỗi phát âm thanh:", err));
+
+          if (!intervalSetChua) {
+            intervalSetChua = true;
+            setInterval(() => {
+              imageIndexChua = (imageIndexChua + 1) % imageSourcesChua.length;
+              imageElementChua.setAttribute("material", "src", imageSourcesChua[imageIndexChua]);
+            }, 3000);
+          }
+        });
+
+        markerChua.addEventListener("markerLost", () => {
+          audioChuaMotCot.pause();
+          audioChuaMotCot.currentTime = 0;
         });
       });
     </script>
@@ -71,29 +81,56 @@
   <body style="margin: 0; overflow: hidden;">
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
       <a-assets>
-        <!-- Preload hình ảnh -->
+        <!-- Hình ảnh Chợ Bến Thành -->
         <img id="image1" src="./media/image/cho-ben-thanh.jpg" />
         <img id="image2" src="./media/image/cho-ben-thanh2.jpg" />
         <img id="image3" src="./media/image/cho-ben-thanh3.jpg" />
+
+        <!-- Hình ảnh Chùa Một Cột -->
+        <img id="image4" src="./media/image/chuamotchot1.jpg" />
+        <img id="image5" src="./media/image/chuamotcot2.jpg" />
+        <img id="image6" src="./media/image/chuamotcot3.jpg" />
       </a-assets>
 
-      <a-marker preset="custom" type="pattern" url="./marker/btn2-50.patt" id="marker">
-        <!-- Hiển thị hình ảnh (ảnh sẽ thay đổi liên tục) -->
+      <!-- Marker Chợ Bến Thành -->
+      <a-marker preset="custom" type="pattern" url="./marker/cho-ben-thanh.patt" id="marker-cho">
         <a-image
-        id="img1"
-        material="src: #image1"
-        width="16"
-        height="9"
-        position="0 0 0"
-        rotation="-90 0 0"
-        scale="0.1 0.2 1"
-        visible="true">
-      </a-image>
-      
-        <!-- Hiển thị chữ -->
+          id="img-cho"
+          material="src: #image1"
+          width="16"
+          height="9"
+          position="0 0 0"
+          rotation="-90 0 0"
+          scale="0.1 0.2 1"
+          visible="true">
+        </a-image>
         <a-text
-          id="text1"
+          id="text-cho"
           value="Market Cho Ben Thanh"
+          color="#FFFFFF"
+          width="3"
+          align="center"
+          position="0 2 0"
+          rotation="-90 0 0"
+          visible="true">
+        </a-text>
+      </a-marker>
+
+      <!-- Marker Chùa Một Cột -->
+      <a-marker preset="custom" type="pattern" url="./marker/chua-mot-cot.patt" id="marker-chua">
+        <a-image
+          id="img-chua"
+          material="src: #image4"
+          width="16"
+          height="9"
+          position="0 0 0"
+          rotation="-90 0 0"
+          scale="0.1 0.2 1"
+          visible="true">
+        </a-image>
+        <a-text
+          id="text-chua"
+          value="One Pillar Pagoda"
           color="#FFFFFF"
           width="3"
           align="center"
