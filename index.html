@@ -23,32 +23,44 @@
           window.dispatchEvent(new UIEvent("resize", { bubbles: true, cancelable: false }));
         }, 3000);
 
-        // Biến lưu trạng thái âm thanh
-        let audioElement = null;
+        // Biến lưu trạng thái
+        let audioElement = new Audio("./media/Audio/bird.mp3");
+        audioElement.preload = "auto"; // Tải sẵn file âm thanh
+        audioElement.loop = true; // Lặp lại audio khi phát
+
+        let currentImageIndex = 0;
+        const images = ["#image1", "#image2", "#image3"]; // Danh sách hình ảnh
+        const imageElement = document.getElementById("img1");
         const marker = document.getElementById("marker");
+        let intervalSet = false; // Tránh chạy nhiều lần interval
 
         // Hàm phát audio
-        function playAudio(src) {
-          if (audioElement) {
-            audioElement.pause(); // Dừng âm thanh hiện tại nếu có
-          }
-          audioElement = new Audio(src);
+        function playAudio() {
           audioElement.currentTime = 0;
           audioElement.play().catch(err => console.warn("Lỗi phát âm thanh:", err));
         }
 
-        // Khi marker xuất hiện, phát âm thanh
+        // Khi marker xuất hiện, phát âm thanh và bắt đầu chuyển ảnh
         marker.addEventListener("markerFound", () => {
-          playAudio("./media/Audio/bird.mp3"); // Đường dẫn file âm thanh
+          console.log("📍 Marker được phát hiện!");
+          playAudio();
+
+          // Nếu chưa có interval chuyển ảnh, bắt đầu xoay vòng ảnh
+          if (!intervalSet) {
+            intervalSet = true;
+            setInterval(() => {
+              currentImageIndex = (currentImageIndex + 1) % images.length;
+              imageElement.setAttribute("material", `src: ${images[currentImageIndex]}`);
+              console.log(`🔄 Đã chuyển sang ảnh: ${images[currentImageIndex]}`);
+            }, 3000); // Đổi ảnh sau mỗi 3 giây
+          }
         });
 
-        // Khi marker mất, dừng âm thanh
+        // Khi marker mất, chỉ dừng âm thanh, ảnh vẫn tiếp tục chuyển
         marker.addEventListener("markerLost", () => {
-          if (audioElement) {
-            audioElement.pause();
-            audioElement.currentTime = 0; // Reset về đầu
-            audioElement = null;
-          }
+          console.log("❌ Marker mất!");
+          audioElement.pause();
+          audioElement.currentTime = 0;
         });
       });
     </script>
