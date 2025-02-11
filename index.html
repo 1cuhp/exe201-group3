@@ -88,6 +88,11 @@
           }
         });
 
+        markerChua.addEventListener("markerLost", () => {
+          audioChuaMotCot.pause();
+          audioChuaMotCot.currentTime = 0;
+        });
+
         // =================== Chùa Vàng ===================
         let audioChuaVang = new Audio("./media/Audio/cauvang.mp4");
         let imageIndexVang = 0;
@@ -116,17 +121,11 @@
           }
         });
 
-        // 🔴 THÊM SỰ KIỆN markerLost để dừng âm thanh Chùa Vàng
         markerVang.addEventListener("markerLost", () => {
-          console.log("❌ Marker Chùa Vàng bị mất!");
           audioChuaVang.pause();
-          audioChuaVang.currentTime = 0; // Reset âm thanh về đầu
+          audioChuaVang.currentTime = 0;
         });
 
-
-
-
-        
         // =================== Chùa Som Rong ===================
         let audioChuaSomRong = new Audio("./media/Audio/chuasomrong.mp4");
         let imageIndexSomRong = 0;
