@@ -7,7 +7,8 @@
       content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
     <!-- A-Frame -->
-    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+
     <!-- AR.js -->
     <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
 
@@ -76,7 +77,8 @@
         <img id="image2" src="./media/image/cho-ben-thanh2.jpg" />
         <img id="image3" src="./media/image/cho-ben-thanh3.jpg" />
 
-        <a-asset id="vietFont" src="https://cdn.aframe.io/fonts/Roboto-msdf.json"></a-asset>
+        <a-asset id="vietFont" src="https://raw.githubusercontent.com/etiennepinchon/aframe-fonts/master/fonts/roboto/Roboto-msdf.json"></a-asset>
+
       </a-assets>
 
       <a-marker preset="custom" type="pattern" url="./marker/btn2-50.patt" id="marker">
@@ -97,6 +99,7 @@
         id="text1"
         value="Chợ Bến Thành"
         font="#vietFont"
+        negate="false"
         color="#FFFFFF"
         width="3"
         align="center"
@@ -104,6 +107,7 @@
         rotation="-90 0 0"
         visible="true">
       </a-text>
+      
       
       </a-marker>
 
