@@ -121,14 +121,42 @@
           }
         });
 
-        markerVang.addEventListener("markerLost", () => {
-          audioChuaVang.pause();
-          audioChuaVang.currentTime = 0;
+        // =================== Chùa Som Rong ===================
+        let audioChuaSomRong = new Audio("./media/Audio/chuasomrong.mp4");
+        let imageIndexSomRong = 0;
+        const imageSourcesSomRong = ["#image10", "#image11", "#image12"];
+        let intervalSetSomRong = false;
+        const markerSomRong = document.getElementById("marker-somrong");
+        const imageElementSomRong = document.getElementById("img-somrong");
+
+        markerSomRong.addEventListener("markerFound", () => {
+          console.log("📍 Marker Chùa Som Rong được phát hiện!");
+          audioChuaSomRong.currentTime = 0;
+          audioChuaSomRong
+            .play()
+            .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
+
+          if (!intervalSetSomRong) {
+            intervalSetSomRong = true;
+            setInterval(() => {
+              imageIndexSomRong =
+                (imageIndexSomRong + 1) % imageSourcesSomRong.length;
+              imageElementSomRong.setAttribute(
+                "material",
+                "src",
+                imageSourcesSomRong[imageIndexSomRong]
+              );
+            }, 3000);
+          }
+        });
+
+        markerSomRong.addEventListener("markerLost", () => {
+          audioChuaSomRong.pause();
+          audioChuaSomRong.currentTime = 0;
         });
       });
     </script>
   </head>
-
   <body style="margin: 0; overflow: hidden">
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
       <a-assets>
@@ -146,9 +174,11 @@
         <img id="image7" src="./media/image/cv1.jpg" />
         <img id="image8" src="./media/image/cv2.jpg" />
         <img id="image9" src="./media/image/cv3.jpg" />
+
+        <img id="image10" src="./media/image/csr1.jpg" />
+        <img id="image11" src="./media/image/csr2.jpg" />
+        <img id="image12" src="./media/image/csr3.jpg" />
       </a-assets>
-
-
 
       <!-- Marker Chợ Bến Thành -->
       <a-marker
@@ -176,8 +206,6 @@
         ></a-text>
       </a-marker>
 
-
-
       <!-- Marker Chùa Một Cột -->
       <a-marker
         preset="custom"
@@ -204,8 +232,6 @@
         ></a-text>
       </a-marker>
 
-
-
       <!-- Marker Chùa Vàng -->
       <a-marker
         preset="custom"
@@ -224,6 +250,32 @@
         ></a-image>
         <a-text
           value="Shwedagon Pagoda"
+          color="#FFD700"
+          width="3"
+          align="center"
+          position="0 2 0"
+          rotation="-90 0 0"
+        ></a-text>
+      </a-marker>
+
+      <a-marker
+        preset="custom"
+        type="pattern"
+        url="./marker/csr-55.patt"
+        id="marker-somrong"
+      >
+        <a-image
+          id="img-somrong"
+          material="src: #image10"
+          width="16"
+          height="9"
+          position="0 0 0"
+          rotation="-90 0 0"
+          scale="0.1 0.2 1"
+          visible="true"
+        ></a-image>
+        <a-text
+          value="Chua Som Rong"
           color="#FFD700"
           width="3"
           align="center"
