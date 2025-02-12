@@ -162,40 +162,24 @@
       // });
 
       window.addEventListener("load", () => {
-  if (
-    typeof THREE !== "undefined" &&
-    THREE.Material &&
-    !("markersAreaEnabled" in THREE.Material.prototype)
-  ) {
-    THREE.Material.prototype.markersAreaEnabled = false;
-  }
-
-  setTimeout(() => {
-    window.dispatchEvent(
-      new UIEvent("resize", { bubbles: true, cancelable: false })
-    );
-  }, 3000);
-
-  // =================== Thêm Biến Kiểm Soát ===================
-  let isLocked = false; // Biến để kiểm soát trạng thái khóa
+  let isLocked = false; // Trạng thái khóa sự kiện
+  let intervalId = null; // Biến lưu interval để dừng khi cần
 
   function setupMarker(markerId, imageElementId, audioSrc, imageSources) {
     let audio = new Audio(audioSrc);
     let imageIndex = 0;
-    let intervalId = null;
     const marker = document.getElementById(markerId);
     const imageElement = document.getElementById(imageElementId);
 
     marker.addEventListener("markerFound", () => {
-      if (isLocked) return; // Nếu đã khóa, không thực hiện tiếp
+      if (isLocked) return; // Nếu đã khóa, không chạy tiếp
 
       console.log(`📍 Marker ${markerId} được phát hiện!`);
-      isLocked = true; // Khóa lại để sự kiện không bị mất
+      isLocked = true; // Khóa sự kiện khi marker được phát hiện
 
       audio.currentTime = 0;
       audio.play().catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
 
-      // Bắt đầu đổi hình ảnh nếu chưa có interval
       if (!intervalId) {
         intervalId = setInterval(() => {
           imageIndex = (imageIndex + 1) % imageSources.length;
@@ -204,20 +188,22 @@
       }
     });
 
-    // Khi bấm vào màn hình -> mở khóa, dừng âm thanh, reset hình ảnh
     document.body.addEventListener("click", () => {
       if (isLocked) {
-        console.log(`🔓 Đã mở khóa sự kiện cho ${markerId}`);
-        isLocked = false; // Mở khóa
+        console.log(`🔓 Đã bỏ khóa sự kiện cho ${markerId}`);
+        isLocked = false;
         audio.pause();
         audio.currentTime = 0;
-        clearInterval(intervalId); // Dừng đổi hình ảnh
-        intervalId = null;
+        
+        if (intervalId) {
+          clearInterval(intervalId); // Dừng đổi ảnh khi bấm vào màn hình
+          intervalId = null;
+        }
       }
     });
   }
 
-  // =================== Gọi Hàm Cho Từng Marker ===================
+  // Cấu hình các marker
   setupMarker("marker-cho", "img-cho", "./media/Audio/chobenthanh.mp4", ["#image1", "#image2", "#image3"]);
   setupMarker("marker-chua", "img-chua", "./media/Audio/chuamotcot.mp4", ["#image4", "#image5", "#image6"]);
   setupMarker("marker-vang", "img-vang", "./media/Audio/cauvang.mp4", ["#image7", "#image8", "#image9"]);
