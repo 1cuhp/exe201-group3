@@ -1,361 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
-    />
-    <!-- A-Frame -->
-    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
-    <!-- AR.js -->
-    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+  <style>
+    #close-button {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: red;
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: none; /* Ẩn nút khi chưa có marker */
+    }
+  </style>
+</head>
+<body style="margin: 0; overflow: hidden">
+  <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+    <a-assets>
+      <!-- Hình ảnh Chợ Bến Thành -->
+      <img id="image1" src="./media/image/cho-ben-thanh.jpg" />
+      <img id="image2" src="./media/image/cho-ben-thanh2.jpg" />
+      <img id="image3" src="./media/image/cho-ben-thanh3.jpg" />
 
-    <script>
-      // window.addEventListener("load", () => {
-      //   if (
-      //     typeof THREE !== "undefined" &&
-      //     THREE.Material &&
-      //     !("markersAreaEnabled" in THREE.Material.prototype)
-      //   ) {
-      //     THREE.Material.prototype.markersAreaEnabled = false;
-      //   }
+      <!-- Hình ảnh Chùa Một Cột -->
+      <img id="image4" src="./media/image/chuamotcot1.jpg" />
+      <img id="image5" src="./media/image/chuamotcot2.jpg" />
+      <img id="image6" src="./media/image/chuamotcot3.jpg" />
 
-      //   setTimeout(() => {
-      //     window.dispatchEvent(
-      //       new UIEvent("resize", { bubbles: true, cancelable: false })
-      //     );
-      //   }, 3000);
+      <!-- Hình ảnh Chùa Vàng -->
+      <img id="image7" src="./media/image/cv1.jpg" />
+      <img id="image8" src="./media/image/cv2.jpg" />
+      <img id="image9" src="./media/image/cv3.jpg" />
 
-      //   // =================== Chợ Bến Thành ===================
-      //   let audioChoBenThanh = new Audio("./media/Audio/chobenthanh.mp4");
-      //   let imageIndexCho = 0;
-      //   const imageSourcesCho = ["#image1", "#image2", "#image3"];
-      //   let intervalSetCho = false;
-      //   const markerCho = document.getElementById("marker-cho");
-      //   const imageElementCho = document.getElementById("img-cho");
+      <!-- Hình ảnh Chùa Som Rong -->
+      <img id="image10" src="./media/image/csr1.jpg" />
+      <img id="image11" src="./media/image/csr2.jpg" />
+      <img id="image12" src="./media/image/csr3.jpg" />
+    </a-assets>
 
-      //   markerCho.addEventListener("markerFound", () => {
-      //     console.log("📍 Marker Chợ Bến Thành được phát hiện!");
-      //     audioChoBenThanh.currentTime = 0;
-      //     audioChoBenThanh
-      //       .play()
-      //       .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
+    <!-- Marker Chợ Bến Thành -->
+    <a-marker preset="custom" type="pattern" url="./marker/btn2-50.patt" id="marker-cho">
+      <a-image id="img-cho" material="src: #image1" width="16" height="9" position="0 0 0" rotation="-90 0 0" scale="0.1 0.2 1" visible="false"></a-image>
+    </a-marker>
 
-      //     if (!intervalSetCho) {
-      //       intervalSetCho = true;
-      //       setInterval(() => {
-      //         imageIndexCho = (imageIndexCho + 1) % imageSourcesCho.length;
-      //         imageElementCho.setAttribute(
-      //           "material",
-      //           "src",
-      //           imageSourcesCho[imageIndexCho]
-      //         );
-      //       }, 3000);
-      //     }
-      //   });
+    <!-- Marker Chùa Một Cột -->
+    <a-marker preset="custom" type="pattern" url="./marker/cmc-55.patt" id="marker-chua">
+      <a-image id="img-chua" material="src: #image4" width="16" height="9" position="0 0 0" rotation="-90 0 0" scale="0.1 0.2 1" visible="false"></a-image>
+    </a-marker>
 
-      //   markerCho.addEventListener("markerLost", () => {
-      //     audioChoBenThanh.pause();
-      //     audioChoBenThanh.currentTime = 0;
-      //   });
+    <!-- Marker Chùa Vàng -->
+    <a-marker preset="custom" type="pattern" url="./marker/cv-55.patt" id="marker-vang">
+      <a-image id="img-vang" material="src: #image7" width="16" height="9" position="0 0 0" rotation="-90 0 0" scale="0.1 0.2 1" visible="false"></a-image>
+    </a-marker>
 
-      //   // =================== Chùa Một Cột ===================
-      //   let audioChuaMotCot = new Audio("./media/Audio/chuamotcot.mp4");
-      //   let imageIndexChua = 0;
-      //   const imageSourcesChua = ["#image4", "#image5", "#image6"];
-      //   let intervalSetChua = false;
-      //   const markerChua = document.getElementById("marker-chua");
-      //   const imageElementChua = document.getElementById("img-chua");
+    <!-- Marker Chùa Som Rong -->
+    <a-marker preset="custom" type="pattern" url="./marker/csr-55.patt" id="marker-somrong">
+      <a-image id="img-somrong" material="src: #image10" width="16" height="9" position="0 0 0" rotation="-90 0 0" scale="0.1 0.2 1" visible="false"></a-image>
+    </a-marker>
 
-      //   markerChua.addEventListener("markerFound", () => {
-      //     console.log("📍 Marker Chùa Một Cột được phát hiện!");
-      //     audioChuaMotCot.currentTime = 0;
-      //     audioChuaMotCot
-      //       .play()
-      //       .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
+    <a-entity camera></a-entity>
+  </a-scene>
 
-      //     if (!intervalSetChua) {
-      //       intervalSetChua = true;
-      //       setInterval(() => {
-      //         imageIndexChua = (imageIndexChua + 1) % imageSourcesChua.length;
-      //         imageElementChua.setAttribute(
-      //           "material",
-      //           "src",
-      //           imageSourcesChua[imageIndexChua]
-      //         );
-      //       }, 3000);
-      //     }
-      //   });
+  <!-- Nút Tắt -->
+  <button id="close-button">Tắt</button>
 
-      //   markerChua.addEventListener("markerLost", () => {
-      //     audioChuaMotCot.pause();
-      //     audioChuaMotCot.currentTime = 0;
-      //   });
+  <script>
+    window.addEventListener("load", () => {
+      let isLocked = false;
+      let intervalId = null;
+      let currentAudio = null;
+      let currentImage = null;
 
-      //   // =================== Chùa Vàng ===================
-      //   let audioChuaVang = new Audio("./media/Audio/cauvang.mp4");
-      //   let imageIndexVang = 0;
-      //   const imageSourcesVang = ["#image7", "#image8", "#image9"];
-      //   let intervalSetVang = false;
-      //   const markerVang = document.getElementById("marker-vang");
-      //   const imageElementVang = document.getElementById("img-vang");
+      function setupMarker(markerId, imageElementId, audioSrc, imageSources) {
+        let audio = new Audio(audioSrc);
+        let imageIndex = 0;
+        const marker = document.getElementById(markerId);
+        const imageElement = document.getElementById(imageElementId);
+        const closeButton = document.getElementById("close-button");
 
-      //   markerVang.addEventListener("markerFound", () => {
-      //     console.log("📍 Marker Chùa Vàng được phát hiện!");
-      //     audioChuaVang.currentTime = 0;
-      //     audioChuaVang
-      //       .play()
-      //       .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
+        marker.addEventListener("markerFound", () => {
+          if (isLocked) return; // Nếu đã khóa, không chạy tiếp
 
-      //     if (!intervalSetVang) {
-      //       intervalSetVang = true;
-      //       setInterval(() => {
-      //         imageIndexVang = (imageIndexVang + 1) % imageSourcesVang.length;
-      //         imageElementVang.setAttribute(
-      //           "material",
-      //           "src",
-      //           imageSourcesVang[imageIndexVang]
-      //         );
-      //       }, 3000);
-      //     }
-      //   });
+          console.log(`📍 Marker ${markerId} được phát hiện!`);
+          isLocked = true;
 
-      //   markerVang.addEventListener("markerLost", () => {
-      //     audioChuaVang.pause();
-      //     audioChuaVang.currentTime = 0;
-      //   });
+          // Hiện hình ảnh
+          currentImage = imageElement;
+          currentImage.setAttribute("visible", "true");
 
-      //   // =================== Chùa Som Rong ===================
-      //   let audioChuaSomRong = new Audio("./media/Audio/chuasomrong.mp4");
-      //   let imageIndexSomRong = 0;
-      //   const imageSourcesSomRong = ["#image10", "#image11", "#image12"];
-      //   let intervalSetSomRong = false;
-      //   const markerSomRong = document.getElementById("marker-somrong");
-      //   const imageElementSomRong = document.getElementById("img-somrong");
+          // Phát âm thanh
+          currentAudio = audio;
+          currentAudio.currentTime = 0;
+          currentAudio.play().catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
 
-      //   markerSomRong.addEventListener("markerFound", () => {
-      //     console.log("📍 Marker Chùa Som Rong được phát hiện!");
-      //     audioChuaSomRong.currentTime = 0;
-      //     audioChuaSomRong
-      //       .play()
-      //       .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
+          // Hiện nút "Tắt"
+          closeButton.style.display = "block";
 
-      //     if (!intervalSetSomRong) {
-      //       intervalSetSomRong = true;
-      //       setInterval(() => {
-      //         imageIndexSomRong =
-      //           (imageIndexSomRong + 1) % imageSourcesSomRong.length;
-      //         imageElementSomRong.setAttribute(
-      //           "material",
-      //           "src",
-      //           imageSourcesSomRong[imageIndexSomRong]
-      //         );
-      //       }, 3000);
-      //     }
-      //   });
+          // Đổi ảnh mỗi 3 giây
+          if (!intervalId) {
+            intervalId = setInterval(() => {
+              imageIndex = (imageIndex + 1) % imageSources.length;
+              imageElement.setAttribute("material", "src", imageSources[imageIndex]);
+            }, 3000);
+          }
+        });
 
-      //   markerSomRong.addEventListener("markerLost", () => {
-      //     audioChuaSomRong.pause();
-      //     audioChuaSomRong.currentTime = 0;
-      //   });
-      // });
+        marker.addEventListener("markerLost", () => {
+          console.log(`⚠ Marker ${markerId} mất, nhưng hình ảnh vẫn giữ!`);
+          if (isLocked) {
+            currentImage.setAttribute("visible", "true"); // Giữ hình ảnh
+          }
+        });
 
-      window.addEventListener("load", () => {
-  let isLocked = false; // Biến để kiểm soát trạng thái khóa
-  let intervalId = null; // Lưu interval để dừng khi cần
-  let currentImageElement = null; // Lưu hình ảnh hiện tại
+        closeButton.addEventListener("click", () => {
+          if (isLocked) {
+            console.log(`🔓 Đã tắt nội dung của ${markerId}`);
+            isLocked = false;
 
-  function setupMarker(markerId, imageElementId, audioSrc, imageSources) {
-    let audio = new Audio(audioSrc);
-    let imageIndex = 0;
-    const marker = document.getElementById(markerId);
-    const imageElement = document.getElementById(imageElementId);
+            // Dừng âm thanh
+            if (currentAudio) {
+              currentAudio.pause();
+              currentAudio.currentTime = 0;
+            }
 
-    marker.addEventListener("markerFound", () => {
-      if (isLocked) return; // Nếu đã khóa, không chạy tiếp
+            // Dừng đổi ảnh
+            if (intervalId) {
+              clearInterval(intervalId);
+              intervalId = null;
+            }
 
-      console.log(`📍 Marker ${markerId} được phát hiện!`);
-      isLocked = true; // Khóa lại
+            // Ẩn hình ảnh
+            if (currentImage) {
+              currentImage.setAttribute("visible", "false");
+            }
 
-      audio.currentTime = 0;
-      audio.play().catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
-
-      // Lưu hình ảnh đang hiển thị
-      currentImageElement = imageElement;
-      currentImageElement.setAttribute("visible", "true"); // Giữ hình ảnh ngay cả khi mất marker
-
-      if (!intervalId) {
-        intervalId = setInterval(() => {
-          imageIndex = (imageIndex + 1) % imageSources.length;
-          imageElement.setAttribute("material", "src", imageSources[imageIndex]);
-        }, 3000);
+            // Ẩn nút "Tắt"
+            closeButton.style.display = "none";
+          }
+        });
       }
+
+      // Cấu hình các marker
+      setupMarker("marker-cho", "img-cho", "./media/Audio/chobenthanh.mp4", ["#image1", "#image2", "#image3"]);
+      setupMarker("marker-chua", "img-chua", "./media/Audio/chuamotcot.mp4", ["#image4", "#image5", "#image6"]);
+      setupMarker("marker-vang", "img-vang", "./media/Audio/cauvang.mp4", ["#image7", "#image8", "#image9"]);
+      setupMarker("marker-somrong", "img-somrong", "./media/Audio/chuasomrong.mp4", ["#image10", "#image11", "#image12"]);
     });
-
-    marker.addEventListener("markerLost", () => {
-      console.log(`⚠ Marker ${markerId} mất, nhưng hình ảnh vẫn giữ!`);
-      if (isLocked) {
-        currentImageElement.setAttribute("visible", "true"); // Vẫn giữ hình khi mất marker
-      }
-    });
-
-    document.body.addEventListener("click", () => {
-      if (isLocked) {
-        console.log(`🔓 Đã mở khóa sự kiện cho ${markerId}`);
-        isLocked = false;
-        audio.pause();
-        audio.currentTime = 0;
-
-        if (intervalId) {
-          clearInterval(intervalId);
-          intervalId = null;
-        }
-
-        if (currentImageElement) {
-          currentImageElement.setAttribute("visible", "false"); // Ẩn hình ảnh khi bấm vào màn hình
-        }
-      }
-    });
-  }
-
-  // Cấu hình các marker
-  setupMarker("marker-cho", "img-cho", "./media/Audio/chobenthanh.mp4", ["#image1", "#image2", "#image3"]);
-  setupMarker("marker-chua", "img-chua", "./media/Audio/chuamotcot.mp4", ["#image4", "#image5", "#image6"]);
-  setupMarker("marker-vang", "img-vang", "./media/Audio/cauvang.mp4", ["#image7", "#image8", "#image9"]);
-  setupMarker("marker-somrong", "img-somrong", "./media/Audio/chuasomrong.mp4", ["#image10", "#image11", "#image12"]);
-});
-
-    </script>
-  </head>
-  <body style="margin: 0; overflow: hidden">
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
-      <a-assets>
-        <!-- Hình ảnh Chợ Bến Thành -->
-        <img id="image1" src="./media/image/cho-ben-thanh.jpg" />
-        <img id="image2" src="./media/image/cho-ben-thanh2.jpg" />
-        <img id="image3" src="./media/image/cho-ben-thanh3.jpg" />
-
-        <!-- Hình ảnh Chùa Một Cột -->
-        <img id="image4" src="./media/image/chuamotchot1.jpg" />
-        <img id="image5" src="./media/image/chuamotcot2.jpg" />
-        <img id="image6" src="./media/image/chuamotcot3.jpg" />
-
-        <!-- Hình ảnh Chùa Vàng -->
-        <img id="image7" src="./media/image/cv1.jpg" />
-        <img id="image8" src="./media/image/cv2.jpg" />
-        <img id="image9" src="./media/image/cv3.jpg" />
-
-        <img id="image10" src="./media/image/csr1.jpg" />
-        <img id="image11" src="./media/image/csr2.jpg" />
-        <img id="image12" src="./media/image/csr3.jpg" />
-      </a-assets>
-
-      <!-- Marker Chợ Bến Thành -->
-      <a-marker
-        preset="custom"
-        type="pattern"
-        url="./marker/btn2-50.patt"
-        id="marker-cho"
-      >
-        <a-image
-          id="img-cho"
-          material="src: #image1"
-          width="16"
-          height="9"
-          position="0 0 0"
-          rotation="-90 0 0"
-          scale="0.1 0.2 1"
-        ></a-image>
-        <a-text
-          value="Market Cho Ben Thanh"
-          color="#FFFFFF"
-          width="3"
-          align="center"
-          position="0 2 0"
-          rotation="-90 0 0"
-        ></a-text>
-      </a-marker>
-
-      <!-- Marker Chùa Một Cột -->
-      <a-marker
-        preset="custom"
-        type="pattern"
-        url="./marker/cmc-55.patt"
-        id="marker-chua"
-      >
-        <a-image
-          id="img-chua"
-          material="src: #image4"
-          width="16"
-          height="9"
-          position="0 0 0"
-          rotation="-90 0 0"
-          scale="0.1 0.2 1"
-        ></a-image>
-        <a-text
-          value="One Pillar Pagoda"
-          color="#FFFFFF"
-          width="3"
-          align="center"
-          position="0 2 0"
-          rotation="-90 0 0"
-        ></a-text>
-      </a-marker>
-
-      <!-- Marker Chùa Vàng -->
-      <a-marker
-        preset="custom"
-        type="pattern"
-        url="./marker/cv-55.patt"
-        id="marker-vang"
-      >
-        <a-image
-          id="img-vang"
-          material="src: #image7"
-          width="16"
-          height="9"
-          position="0 0 0"
-          rotation="-90 0 0"
-          scale="0.1 0.2 1"
-        ></a-image>
-        <a-text
-          value="Shwedagon Pagoda"
-          color="#FFD700"
-          width="3"
-          align="center"
-          position="0 2 0"
-          rotation="-90 0 0"
-        ></a-text>
-      </a-marker>
-
-      <a-marker
-        preset="custom"
-        type="pattern"
-        url="./marker/csr-55.patt"
-        id="marker-somrong"
-      >
-        <a-image
-          id="img-somrong"
-          material="src: #image10"
-          width="16"
-          height="9"
-          position="0 0 0"
-          rotation="-90 0 0"
-          scale="0.1 0.2 1"
-          visible="true"
-        ></a-image>
-        <a-text
-          value="Chua Som Rong"
-          color="#FFD700"
-          width="3"
-          align="center"
-          position="0 2 0"
-          rotation="-90 0 0"
-        ></a-text>
-      </a-marker>
-
-      <a-entity camera></a-entity>
-    </a-scene>
-  </body>
+  </script>
+</body>
 </html>
