@@ -12,154 +12,218 @@
     <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
 
     <script>
+      // window.addEventListener("load", () => {
+      //   if (
+      //     typeof THREE !== "undefined" &&
+      //     THREE.Material &&
+      //     !("markersAreaEnabled" in THREE.Material.prototype)
+      //   ) {
+      //     THREE.Material.prototype.markersAreaEnabled = false;
+      //   }
+
+      //   setTimeout(() => {
+      //     window.dispatchEvent(
+      //       new UIEvent("resize", { bubbles: true, cancelable: false })
+      //     );
+      //   }, 3000);
+
+      //   // =================== Chợ Bến Thành ===================
+      //   let audioChoBenThanh = new Audio("./media/Audio/chobenthanh.mp4");
+      //   let imageIndexCho = 0;
+      //   const imageSourcesCho = ["#image1", "#image2", "#image3"];
+      //   let intervalSetCho = false;
+      //   const markerCho = document.getElementById("marker-cho");
+      //   const imageElementCho = document.getElementById("img-cho");
+
+      //   markerCho.addEventListener("markerFound", () => {
+      //     console.log("📍 Marker Chợ Bến Thành được phát hiện!");
+      //     audioChoBenThanh.currentTime = 0;
+      //     audioChoBenThanh
+      //       .play()
+      //       .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
+
+      //     if (!intervalSetCho) {
+      //       intervalSetCho = true;
+      //       setInterval(() => {
+      //         imageIndexCho = (imageIndexCho + 1) % imageSourcesCho.length;
+      //         imageElementCho.setAttribute(
+      //           "material",
+      //           "src",
+      //           imageSourcesCho[imageIndexCho]
+      //         );
+      //       }, 3000);
+      //     }
+      //   });
+
+      //   markerCho.addEventListener("markerLost", () => {
+      //     audioChoBenThanh.pause();
+      //     audioChoBenThanh.currentTime = 0;
+      //   });
+
+      //   // =================== Chùa Một Cột ===================
+      //   let audioChuaMotCot = new Audio("./media/Audio/chuamotcot.mp4");
+      //   let imageIndexChua = 0;
+      //   const imageSourcesChua = ["#image4", "#image5", "#image6"];
+      //   let intervalSetChua = false;
+      //   const markerChua = document.getElementById("marker-chua");
+      //   const imageElementChua = document.getElementById("img-chua");
+
+      //   markerChua.addEventListener("markerFound", () => {
+      //     console.log("📍 Marker Chùa Một Cột được phát hiện!");
+      //     audioChuaMotCot.currentTime = 0;
+      //     audioChuaMotCot
+      //       .play()
+      //       .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
+
+      //     if (!intervalSetChua) {
+      //       intervalSetChua = true;
+      //       setInterval(() => {
+      //         imageIndexChua = (imageIndexChua + 1) % imageSourcesChua.length;
+      //         imageElementChua.setAttribute(
+      //           "material",
+      //           "src",
+      //           imageSourcesChua[imageIndexChua]
+      //         );
+      //       }, 3000);
+      //     }
+      //   });
+
+      //   markerChua.addEventListener("markerLost", () => {
+      //     audioChuaMotCot.pause();
+      //     audioChuaMotCot.currentTime = 0;
+      //   });
+
+      //   // =================== Chùa Vàng ===================
+      //   let audioChuaVang = new Audio("./media/Audio/cauvang.mp4");
+      //   let imageIndexVang = 0;
+      //   const imageSourcesVang = ["#image7", "#image8", "#image9"];
+      //   let intervalSetVang = false;
+      //   const markerVang = document.getElementById("marker-vang");
+      //   const imageElementVang = document.getElementById("img-vang");
+
+      //   markerVang.addEventListener("markerFound", () => {
+      //     console.log("📍 Marker Chùa Vàng được phát hiện!");
+      //     audioChuaVang.currentTime = 0;
+      //     audioChuaVang
+      //       .play()
+      //       .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
+
+      //     if (!intervalSetVang) {
+      //       intervalSetVang = true;
+      //       setInterval(() => {
+      //         imageIndexVang = (imageIndexVang + 1) % imageSourcesVang.length;
+      //         imageElementVang.setAttribute(
+      //           "material",
+      //           "src",
+      //           imageSourcesVang[imageIndexVang]
+      //         );
+      //       }, 3000);
+      //     }
+      //   });
+
+      //   markerVang.addEventListener("markerLost", () => {
+      //     audioChuaVang.pause();
+      //     audioChuaVang.currentTime = 0;
+      //   });
+
+      //   // =================== Chùa Som Rong ===================
+      //   let audioChuaSomRong = new Audio("./media/Audio/chuasomrong.mp4");
+      //   let imageIndexSomRong = 0;
+      //   const imageSourcesSomRong = ["#image10", "#image11", "#image12"];
+      //   let intervalSetSomRong = false;
+      //   const markerSomRong = document.getElementById("marker-somrong");
+      //   const imageElementSomRong = document.getElementById("img-somrong");
+
+      //   markerSomRong.addEventListener("markerFound", () => {
+      //     console.log("📍 Marker Chùa Som Rong được phát hiện!");
+      //     audioChuaSomRong.currentTime = 0;
+      //     audioChuaSomRong
+      //       .play()
+      //       .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
+
+      //     if (!intervalSetSomRong) {
+      //       intervalSetSomRong = true;
+      //       setInterval(() => {
+      //         imageIndexSomRong =
+      //           (imageIndexSomRong + 1) % imageSourcesSomRong.length;
+      //         imageElementSomRong.setAttribute(
+      //           "material",
+      //           "src",
+      //           imageSourcesSomRong[imageIndexSomRong]
+      //         );
+      //       }, 3000);
+      //     }
+      //   });
+
+      //   markerSomRong.addEventListener("markerLost", () => {
+      //     audioChuaSomRong.pause();
+      //     audioChuaSomRong.currentTime = 0;
+      //   });
+      // });
+
       window.addEventListener("load", () => {
-        if (
-          typeof THREE !== "undefined" &&
-          THREE.Material &&
-          !("markersAreaEnabled" in THREE.Material.prototype)
-        ) {
-          THREE.Material.prototype.markersAreaEnabled = false;
-        }
+  if (
+    typeof THREE !== "undefined" &&
+    THREE.Material &&
+    !("markersAreaEnabled" in THREE.Material.prototype)
+  ) {
+    THREE.Material.prototype.markersAreaEnabled = false;
+  }
 
-        setTimeout(() => {
-          window.dispatchEvent(
-            new UIEvent("resize", { bubbles: true, cancelable: false })
-          );
+  setTimeout(() => {
+    window.dispatchEvent(
+      new UIEvent("resize", { bubbles: true, cancelable: false })
+    );
+  }, 3000);
+
+  // =================== Thêm Biến Kiểm Soát ===================
+  let isLocked = false; // Biến để kiểm soát trạng thái khóa
+
+  function setupMarker(markerId, imageElementId, audioSrc, imageSources) {
+    let audio = new Audio(audioSrc);
+    let imageIndex = 0;
+    let intervalId = null;
+    const marker = document.getElementById(markerId);
+    const imageElement = document.getElementById(imageElementId);
+
+    marker.addEventListener("markerFound", () => {
+      if (isLocked) return; // Nếu đã khóa, không thực hiện tiếp
+
+      console.log(`📍 Marker ${markerId} được phát hiện!`);
+      isLocked = true; // Khóa lại để sự kiện không bị mất
+
+      audio.currentTime = 0;
+      audio.play().catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
+
+      // Bắt đầu đổi hình ảnh nếu chưa có interval
+      if (!intervalId) {
+        intervalId = setInterval(() => {
+          imageIndex = (imageIndex + 1) % imageSources.length;
+          imageElement.setAttribute("material", "src", imageSources[imageIndex]);
         }, 3000);
+      }
+    });
 
-        // =================== Chợ Bến Thành ===================
-        let audioChoBenThanh = new Audio("./media/Audio/chobenthanh.mp4");
-        let imageIndexCho = 0;
-        const imageSourcesCho = ["#image1", "#image2", "#image3"];
-        let intervalSetCho = false;
-        const markerCho = document.getElementById("marker-cho");
-        const imageElementCho = document.getElementById("img-cho");
+    // Khi bấm vào màn hình -> mở khóa, dừng âm thanh, reset hình ảnh
+    document.body.addEventListener("click", () => {
+      if (isLocked) {
+        console.log(`🔓 Đã mở khóa sự kiện cho ${markerId}`);
+        isLocked = false; // Mở khóa
+        audio.pause();
+        audio.currentTime = 0;
+        clearInterval(intervalId); // Dừng đổi hình ảnh
+        intervalId = null;
+      }
+    });
+  }
 
-        markerCho.addEventListener("markerFound", () => {
-          console.log("📍 Marker Chợ Bến Thành được phát hiện!");
-          audioChoBenThanh.currentTime = 0;
-          audioChoBenThanh
-            .play()
-            .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
+  // =================== Gọi Hàm Cho Từng Marker ===================
+  setupMarker("marker-cho", "img-cho", "./media/Audio/chobenthanh.mp4", ["#image1", "#image2", "#image3"]);
+  setupMarker("marker-chua", "img-chua", "./media/Audio/chuamotcot.mp4", ["#image4", "#image5", "#image6"]);
+  setupMarker("marker-vang", "img-vang", "./media/Audio/cauvang.mp4", ["#image7", "#image8", "#image9"]);
+  setupMarker("marker-somrong", "img-somrong", "./media/Audio/chuasomrong.mp4", ["#image10", "#image11", "#image12"]);
+});
 
-          if (!intervalSetCho) {
-            intervalSetCho = true;
-            setInterval(() => {
-              imageIndexCho = (imageIndexCho + 1) % imageSourcesCho.length;
-              imageElementCho.setAttribute(
-                "material",
-                "src",
-                imageSourcesCho[imageIndexCho]
-              );
-            }, 3000);
-          }
-        });
-
-        markerCho.addEventListener("markerLost", () => {
-          audioChoBenThanh.pause();
-          audioChoBenThanh.currentTime = 0;
-        });
-
-        // =================== Chùa Một Cột ===================
-        let audioChuaMotCot = new Audio("./media/Audio/chuamotcot.mp4");
-        let imageIndexChua = 0;
-        const imageSourcesChua = ["#image4", "#image5", "#image6"];
-        let intervalSetChua = false;
-        const markerChua = document.getElementById("marker-chua");
-        const imageElementChua = document.getElementById("img-chua");
-
-        markerChua.addEventListener("markerFound", () => {
-          console.log("📍 Marker Chùa Một Cột được phát hiện!");
-          audioChuaMotCot.currentTime = 0;
-          audioChuaMotCot
-            .play()
-            .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
-
-          if (!intervalSetChua) {
-            intervalSetChua = true;
-            setInterval(() => {
-              imageIndexChua = (imageIndexChua + 1) % imageSourcesChua.length;
-              imageElementChua.setAttribute(
-                "material",
-                "src",
-                imageSourcesChua[imageIndexChua]
-              );
-            }, 3000);
-          }
-        });
-
-        markerChua.addEventListener("markerLost", () => {
-          audioChuaMotCot.pause();
-          audioChuaMotCot.currentTime = 0;
-        });
-
-        // =================== Chùa Vàng ===================
-        let audioChuaVang = new Audio("./media/Audio/cauvang.mp4");
-        let imageIndexVang = 0;
-        const imageSourcesVang = ["#image7", "#image8", "#image9"];
-        let intervalSetVang = false;
-        const markerVang = document.getElementById("marker-vang");
-        const imageElementVang = document.getElementById("img-vang");
-
-        markerVang.addEventListener("markerFound", () => {
-          console.log("📍 Marker Chùa Vàng được phát hiện!");
-          audioChuaVang.currentTime = 0;
-          audioChuaVang
-            .play()
-            .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
-
-          if (!intervalSetVang) {
-            intervalSetVang = true;
-            setInterval(() => {
-              imageIndexVang = (imageIndexVang + 1) % imageSourcesVang.length;
-              imageElementVang.setAttribute(
-                "material",
-                "src",
-                imageSourcesVang[imageIndexVang]
-              );
-            }, 3000);
-          }
-        });
-
-        markerVang.addEventListener("markerLost", () => {
-          audioChuaVang.pause();
-          audioChuaVang.currentTime = 0;
-        });
-
-        // =================== Chùa Som Rong ===================
-        let audioChuaSomRong = new Audio("./media/Audio/chuasomrong.mp4");
-        let imageIndexSomRong = 0;
-        const imageSourcesSomRong = ["#image10", "#image11", "#image12"];
-        let intervalSetSomRong = false;
-        const markerSomRong = document.getElementById("marker-somrong");
-        const imageElementSomRong = document.getElementById("img-somrong");
-
-        markerSomRong.addEventListener("markerFound", () => {
-          console.log("📍 Marker Chùa Som Rong được phát hiện!");
-          audioChuaSomRong.currentTime = 0;
-          audioChuaSomRong
-            .play()
-            .catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
-
-          if (!intervalSetSomRong) {
-            intervalSetSomRong = true;
-            setInterval(() => {
-              imageIndexSomRong =
-                (imageIndexSomRong + 1) % imageSourcesSomRong.length;
-              imageElementSomRong.setAttribute(
-                "material",
-                "src",
-                imageSourcesSomRong[imageIndexSomRong]
-              );
-            }, 3000);
-          }
-        });
-
-        markerSomRong.addEventListener("markerLost", () => {
-          audioChuaSomRong.pause();
-          audioChuaSomRong.currentTime = 0;
-        });
-      });
     </script>
   </head>
   <body style="margin: 0; overflow: hidden">
