@@ -162,8 +162,9 @@
       // });
 
       window.addEventListener("load", () => {
-  let isLocked = false; // Trạng thái khóa sự kiện
-  let intervalId = null; // Biến lưu interval để dừng khi cần
+  let isLocked = false; // Biến để kiểm soát trạng thái khóa
+  let intervalId = null; // Lưu interval để dừng khi cần
+  let currentImageElement = null; // Lưu hình ảnh hiện tại
 
   function setupMarker(markerId, imageElementId, audioSrc, imageSources) {
     let audio = new Audio(audioSrc);
@@ -175,10 +176,14 @@
       if (isLocked) return; // Nếu đã khóa, không chạy tiếp
 
       console.log(`📍 Marker ${markerId} được phát hiện!`);
-      isLocked = true; // Khóa sự kiện khi marker được phát hiện
+      isLocked = true; // Khóa lại
 
       audio.currentTime = 0;
       audio.play().catch((err) => console.warn("❌ Lỗi phát âm thanh:", err));
+
+      // Lưu hình ảnh đang hiển thị
+      currentImageElement = imageElement;
+      currentImageElement.setAttribute("visible", "true"); // Giữ hình ảnh ngay cả khi mất marker
 
       if (!intervalId) {
         intervalId = setInterval(() => {
@@ -188,16 +193,27 @@
       }
     });
 
+    marker.addEventListener("markerLost", () => {
+      console.log(`⚠ Marker ${markerId} mất, nhưng hình ảnh vẫn giữ!`);
+      if (isLocked) {
+        currentImageElement.setAttribute("visible", "true"); // Vẫn giữ hình khi mất marker
+      }
+    });
+
     document.body.addEventListener("click", () => {
       if (isLocked) {
-        console.log(`🔓 Đã bỏ khóa sự kiện cho ${markerId}`);
+        console.log(`🔓 Đã mở khóa sự kiện cho ${markerId}`);
         isLocked = false;
         audio.pause();
         audio.currentTime = 0;
-        
+
         if (intervalId) {
-          clearInterval(intervalId); // Dừng đổi ảnh khi bấm vào màn hình
+          clearInterval(intervalId);
           intervalId = null;
+        }
+
+        if (currentImageElement) {
+          currentImageElement.setAttribute("visible", "false"); // Ẩn hình ảnh khi bấm vào màn hình
         }
       }
     });
